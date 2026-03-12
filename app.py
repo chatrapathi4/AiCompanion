@@ -13,9 +13,15 @@ Usage:
     python app.py --port 5000      # Custom port
 """
 
+import os
+
+# eventlet must be monkey-patched before all other imports when running on Render
+if os.environ.get("RENDER"):
+    import eventlet
+    eventlet.monkey_patch()
+
 import argparse
 import base64
-import os
 import threading
 import time
 
@@ -40,7 +46,8 @@ log = get_logger(__name__)
 # ── Flask application ─────────────────────────────────────────────────
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+_async_mode = "eventlet" if os.environ.get("RENDER") else "threading"
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode=_async_mode)
 
 # ── Shared camera state ──────────────────────────────────────────────
 _emotion_detector: EmotionDetector | None = None

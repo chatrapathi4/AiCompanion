@@ -9,6 +9,6 @@ textblob
 flask
 flask-socketio
 gunicorn
-simple-websocket
+eventlet
 langdetect
 gTTS
