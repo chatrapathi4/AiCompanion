@@ -1,0 +1,275 @@
+================================================================================
+                    AI COMPANION — Emotion-Aware Chatbot
+================================================================================
+
+SUMMARY
+-------
+AI Companion is an emotion-aware, multilingual AI chatbot built with Python.
+It detects your facial emotions in real-time via webcam, listens to your voice,
+understands your sentiment, and responds empathetically using free LLMs
+(Groq / LLaMA 3.3 70B for chat, LLaMA 4 Scout for vision). It features a modern
+web interface with a 3D animated sphere, proactive AI observations, and
+Gemini-like vision capabilities — it can see and describe objects you show it!
+
+Everything used in this project is completely free and open-source.
+
+
+================================================================================
+                              HOW TO START
+================================================================================
+
+STEP 1 — Prerequisites
+  - Python 3.10 or higher
+  - A webcam (optional, for emotion detection)
+  - A microphone (optional, for voice input)
+  - Internet connection (for Groq API and gTTS)
+
+STEP 2 — Install Dependencies
+  Open a terminal in the project folder and run:
+
+    pip install -r requirements.txt
+
+  Platform-specific notes:
+    Windows PyAudio : If pip install fails, download the .whl from
+                      https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio
+                      then run:  pip install <downloaded_file>.whl
+    Linux           : sudo apt install portaudio19-dev python3-pyaudio espeak
+
+STEP 3 — Get a Groq API Key (Free)
+  1. Go to https://console.groq.com
+  2. Create an account and generate an API key
+  3. Create a file named  .env  in the project root with this content:
+
+       GROQ_API_KEY=your_api_key_here
+
+STEP 4 — Run the Project
+
+  WEB MODE (recommended):
+    python app.py
+    Then open your browser to  http://localhost:5000
+
+  CLI MODE:
+    python main.py
+
+
+================================================================================
+                           RUN COMMAND OPTIONS
+================================================================================
+
+WEB MODE (app.py):
+  python app.py                     Start web server (default port 5000)
+  python app.py --port 8000         Use custom port
+  python app.py --host 0.0.0.0     Listen on all network interfaces
+  python app.py --no-camera         Disable server-side camera
+  python app.py --cam-index 1       Use a specific camera device
+
+CLI MODE (main.py):
+  python main.py                    Full mode (camera + voice)
+  python main.py --no-camera        Skip emotion detection
+  python main.py --no-voice         Keyboard input, text output
+  python main.py --text-only        No camera, no voice (pure text)
+  python main.py --list-mics        List available microphones
+  python main.py --mic-index 2      Use a specific microphone
+  python main.py --cam-index 1      Use a specific camera
+  python main.py --no-preview       Hide the camera preview window
+
+
+================================================================================
+                           ENVIRONMENT VARIABLES
+================================================================================
+
+Create a  .env  file in the project root. Only GROQ_API_KEY is required.
+
+  GROQ_API_KEY=your_key_here           (REQUIRED)
+
+  GROQ_MODEL=llama-3.3-70b-versatile   (default LLM model)
+  LLM_TEMPERATURE=0.7                  (response creativity 0.0-1.0)
+  LLM_MAX_TOKENS=256                   (max tokens per response)
+  MAX_HISTORY=20                       (conversation history window)
+  CAMERA_INDEX=0                       (default camera device index)
+  TTS_RATE=160                         (speech speed for CLI TTS)
+  TTS_VOLUME=1.0                       (speech volume for CLI TTS)
+  SESSION_LOG_DIR=sessions             (where session logs are saved)
+  ENABLE_SESSION_LOGGING=true          (enable/disable session logging)
+
+
+================================================================================
+                              FEATURES
+================================================================================
+
+  🎭 Real-Time Emotion Detection
+    - Webcam-based facial expression recognition (happy, sad, angry,
+      surprise, fear, disgust, neutral) using OpenCV + FER (MTCNN)
+    - Confidence thresholding to avoid false detections
+    - Emotion passed to AI for emotionally-aware responses
+
+  🧠 Empathetic Conversational AI
+    - Powered by Groq API (LLaMA 3.3 70B) — completely free
+    - The AI adapts its tone based on your detected emotion
+    - Maintains conversation history for contextual responses
+    - Graceful fallback responses if the API is unreachable
+
+  👁️ Vision Capabilities (NEW - Gemini Live Style)
+    - Show objects, documents, or products to the camera
+    - Ask "What is this?" or "Read this" and AI will analyze it
+    - Powered by LLaMA 4 Scout 17B multimodal vision model
+    - Automatic keyword detection triggers vision analysis
+
+  🤖 Proactive AI Observations (NEW)
+    - AI observes through camera every 15 seconds when idle
+    - Comments on interesting things it sees (objects, activities)
+    - Asks caring questions if you look sad or stressed
+    - Only activates when AI is truly idle (not interrupting)
+
+  🎤 Voice Input & Output
+    - Speech-to-Text via Google Speech Recognition (free)
+    - Text-to-Speech via pyttsx3 (offline, CLI) and gTTS (server-side, web)
+    - Automatic ambient noise compensation
+
+  🌍 Multilingual Support (Enhanced)
+    - Automatically detects the language you're speaking/typing
+    - Script-based detection for Telugu (తెలుగు), Hindi (हिंदी), Tamil, etc.
+    - Supports 20+ languages: English, Hindi, Telugu, Tamil, Spanish,
+      French, German, Japanese, Korean, Chinese, Arabic, and more
+    - AI responds in the same language you use
+    - gTTS speaks in the detected language (including Indic scripts)
+
+  🌐 Modern Web Interface
+    - 3D animated sphere (Three.js) that reacts to AI state
+      (idle, speaking, listening, thinking) with color and motion changes
+    - Real-time chat via Socket.IO
+    - Draggable self-view camera (like a video call preview)
+    - Emotion and language indicator badges
+    - Glassmorphic dark theme with responsive design
+    - Browser-native speech recognition (Web Speech API)
+
+  📊 Sentiment Analysis
+    - Text sentiment scoring via TextBlob
+    - Combined mood calculation (70% facial emotion + 30% text sentiment)
+
+  📝 Session Logging & Analytics
+    - Saves conversations as JSON files with timestamps and emotions
+    - Emotion distribution report with colored bar chart (CLI)
+    - Session summaries (start/end time, dominant emotion, turn count)
+
+  🔄 Graceful Fallbacks
+    - No camera? Skips emotion detection, chat continues normally
+    - No microphone? Falls back to keyboard input
+    - API down? Uses fallback greeting messages
+    - TTS failure? Continues without audio
+
+
+================================================================================
+                              TECH STACK
+================================================================================
+
+  Component               Technology
+  ----------------------  -------------------------------------------
+  Backend Framework       Flask + Flask-SocketIO
+  Chat LLM                Groq API (LLaMA 3.3 70B free tier)
+  Vision LLM              Groq API (LLaMA 4 Scout 17B multimodal)
+  Speech-to-Text          SpeechRecognition (Google API)
+  Text-to-Speech          pyttsx3 (offline) + gTTS (server-side)
+  Emotion Detection       OpenCV + FER (MTCNN)
+  Sentiment Analysis      TextBlob
+  Language Detection      langdetect + Unicode script detection
+  Frontend 3D Graphics    Three.js v0.160.0 (ES modules)
+  Real-Time Communication Socket.IO 4.7
+  Browser Voice APIs      Web Speech API
+  Environment Config      python-dotenv
+  Logging                 Python logging (rotating file handler)
+
+
+================================================================================
+                           PROJECT STRUCTURE
+================================================================================
+
+  AICompanion/
+  |-- main.py                  CLI entry point (multi-mode arguments)
+  |-- app.py                   Flask web server (Socket.IO, gTTS, vision)
+  |-- groq_chat.py             Groq LLM wrapper (empathetic system prompt)
+  |-- vision_analyzer.py       LLaMA 4 Scout vision analysis (NEW)
+  |-- conversation_manager.py  CLI orchestrator (camera + voice + LLM loop)
+  |-- emotion_detector.py      Webcam emotion detection (OpenCV + FER)
+  |-- voice_input.py           Microphone speech-to-text
+  |-- voice_output.py          Offline text-to-speech (pyttsx3)
+  |-- sentiment_analyzer.py    Text sentiment + combined mood scoring
+  |-- language_detector.py     Language detection (script + langdetect)
+  |-- session_logger.py        JSON session persistence
+  |-- emotion_analytics.py     Emotion distribution analytics & reports
+  |-- settings.py              Centralized config from .env
+  |-- logger_setup.py          Structured logging setup
+  |-- requirements.txt         Python dependencies
+  |-- .env                     API keys & config (you create this)
+  |-- .gitignore               Git ignore rules
+  |-- templates/
+  |   |-- index.html           Web UI template
+  |-- static/
+  |   |-- css/
+  |   |   |-- style.css        Dark glassmorphic theme
+  |   |-- js/
+  |       |-- app.js           Three.js sphere, Socket.IO, vision, TTS/STT
+  |-- sessions/                Saved conversation logs (auto-created)
+
+
+================================================================================
+                        FEATURE COMPARISON: CLI vs WEB
+================================================================================
+
+  Feature              CLI Mode     Web Mode
+  -------------------  ----------   ---------------------------------
+  Emotion Detection    Yes          Yes
+  Voice Input          Yes (mic)    Yes (browser STT)
+  Voice Output         Yes (local)  Yes (gTTS + browser TTS)
+  Camera Preview       Native CV2   MJPEG stream + draggable self-view
+  Vision Analysis      No           Yes (show objects, read documents)
+  Proactive AI         No           Yes (AI observes & comments)
+  Session Logging      On exit      On disconnect
+  Multilingual         Yes          Yes (with script detection)
+  3D Animation         No           Yes (Three.js sphere)
+  Keyboard Input       Yes          Yes (chat box)
+
+
+================================================================================
+                          VISION TRIGGER PHRASES
+================================================================================
+
+  Say or type any of these to trigger vision analysis:
+
+  English:
+    "What is this?"      "Look at this"      "What do you see?"
+    "Can you see this?"  "Show you"          "What am I holding?"
+    "Read this"          "Describe this"     "What does this say?"
+
+  Telugu (తెలుగు):
+    "చూడు"               "ఇది ఏంటి"          "చదువు"
+
+  Hindi (हिंदी):
+    "देखो"               "यह क्या है"        "पढ़ो"
+
+  The AI will automatically capture the current camera frame and analyze it!
+
+
+================================================================================
+                              API KEYS
+================================================================================
+
+  Service                  Key Needed?   Free?   Where to Get
+  -----------------------  -----------   -----   ----------------------------
+  Groq (LLM)              Yes           Yes     https://console.groq.com
+  Google Speech (STT)      No            Yes     Built into SpeechRecognition
+  Google TTS (gTTS)        No            Yes     Built into gTTS library
+
+
+================================================================================
+                            QUICK START
+================================================================================
+
+  1.  pip install -r requirements.txt
+  2.  Create .env file with:  GROQ_API_KEY=your_key_here
+  3.  python app.py
+  4.  Open http://localhost:5000 in your browser
+  5.  Allow camera and microphone when prompted
+  6.  Start talking to your AI Companion!
+
+================================================================================

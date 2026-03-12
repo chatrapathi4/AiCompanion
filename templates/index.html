@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Three.js background canvas -->
+    <canvas id="sphere-canvas"></canvas>
+
+    <!-- Header -->
+    <header id="app-header">
+        <h1>AI Companion</h1>
+        <p class="subtitle">Emotion-Aware Conversational AI</p>
+    </header>
+
+    <!-- Status indicator -->
+    <div id="status-bar">
+        <span id="status-dot" class="disconnected"></span>
+        <span id="status-text">Connecting&hellip;</span>
+    </div>
+
+    <!-- Badges row -->
+    <div id="badges-row">
+        <div id="emotion-badge" class="glass badge">
+            <span id="emotion-icon">😐</span>
+            <span id="emotion-text">Neutral</span>
+        </div>
+        <div id="lang-badge" class="glass badge">
+            <span id="lang-icon">🌐</span>
+            <span id="lang-text">English</span>
+        </div>
+    </div>
+
+    <!-- Self-view camera (video-call style, bottom-left) -->
+    <div id="self-view" class="glass">
+        <video id="self-video" autoplay muted playsinline></video>
+        <button id="cam-toggle" class="cam-toggle-btn" title="Toggle camera">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+            </svg>
+        </button>
+        <div id="self-view-off" class="cam-off-label">Camera off</div>
+    </div>
+
+    <!-- Chat panel -->
+    <div id="chat-panel" class="glass">
+        <div id="messages"></div>
+        <form id="input-bar" autocomplete="off">
+            <input type="text" id="user-input" placeholder="Type a message..." />
+            <button type="button" id="mic-btn" class="icon-btn" title="Voice input">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+            </button>
+            <button type="submit" id="send-btn" class="icon-btn" title="Send message">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script>window.USE_SERVER_CAMERA = {{ use_camera | tojson }};</script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+        }
+    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.7.5/dist/socket.io.min.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
