@@ -1,10 +1,7 @@
 opencv-python
 fer
-speechrecognition
-pyttsx3
 groq
 numpy
-pyaudio
 python-dotenv
 tensorflow
 setuptools

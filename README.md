@@ -161,6 +161,26 @@ python main.py --no-voice
 python main.py --text-only
 ```
 
+### 5. Deploy on Render
+
+The repo includes a Render blueprint file: [render.yaml](e:/my_projects/AICompanion/render.yaml)
+
+1. Push the repository to GitHub.
+2. In Render, choose New + > Blueprint and select this repo.
+3. Add the environment variable `GROQ_API_KEY` in Render.
+4. Deploy.
+
+Render uses this production start command:
+
+```bash
+gunicorn --worker-class gthread --threads 8 --timeout 120 --bind 0.0.0.0:$PORT app:app
+```
+
+Notes:
+- Render installs `render-requirements.txt`, which excludes CLI-only dependencies such as `pyaudio`.
+- Hosted deployments should use the browser camera and microphone only. Server-side camera access is not expected on Render.
+- The app still supports browser emotion detection, multilingual chat, vision analysis, and proactive AI in production.
+
 ---
 
 ## 💬 Example Interaction
